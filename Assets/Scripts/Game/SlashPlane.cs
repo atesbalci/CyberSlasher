@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UniRx;
 using UnityEngine;
 using Utility;
 
@@ -55,7 +54,7 @@ namespace Game
         //TODO: (Haram) This function incorporates trail renderer vertexes with the slashing logic, that shouldn't be the case. It could be fixed by having these vertexes be kept in a separate place.
         public void ApplyHits()
         {
-            var slashees = new List<Tuple<ISlashable, float>>();
+            var slashees = new List<SlashInfo>();
             var cam = Camera.main;
             foreach (var slashable in GameRegistry.Slashables)
             {
@@ -103,8 +102,12 @@ namespace Game
                     plane.Raycast(ray2, out hit2);
                     var p1 = ray1.GetPoint(hit1);
                     var p2 = ray2.GetPoint(hit2);
-                    Debug.DrawLine(p1, p2, Color.red, 1f, false);
-                    slashees.Add(new Tuple<ISlashable, float>(slashable, Vector3.Distance(p1, p2)));
+                    slashees.Add(new SlashInfo
+                    {
+                        Slashee = slashable,
+                        EnterPosition = p1,
+                        ExitPosition = p2
+                    });
                 }
             }
 
@@ -133,7 +136,14 @@ namespace Game
 
     public class SlashCompletedEvent : GameEvent
     {
-        public List<Tuple<ISlashable, float>> Slashees { get; set; }
+        public List<SlashInfo> Slashees { get; set; }
         public Vector3 AverageDirection { get; set; }
+    }
+
+    public class SlashInfo
+    {
+        public ISlashable Slashee { get; set; }
+        public Vector3 EnterPosition { get; set; }
+        public Vector3 ExitPosition { get; set; }
     }
 }

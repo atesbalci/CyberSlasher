@@ -10,7 +10,7 @@ namespace Utility
             MessageBroker.Default.Publish(ev);
         }
 
-        public static IObservable<T> ReceiveEvent<T>(T ev) where T : GameEvent
+        public static IObservable<T> ReceiveEvent<T>() where T : GameEvent
         {
             return MessageBroker.Default.Receive<T>();
         }
