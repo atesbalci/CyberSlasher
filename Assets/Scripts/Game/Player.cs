@@ -18,10 +18,10 @@ namespace Game
         [SerializeField] private Saber _saber;
         [Space(10)] [SerializeField] private TrailRenderer _slashTrailPrefab;
         private GameThirdPerson _charController;
-        private float _energy;
 
         private void Start()
         {
+            _saber.Active += () => _charController.FirstPersonActive;
             _charController = GetComponent<GameThirdPerson>();
             MessageManager.ReceiveEvent<SlashCompletedEvent>().Subscribe(ev =>
             {
@@ -43,27 +43,11 @@ namespace Game
         {
             _charController.FirstPersonActive = Input.GetKey(KeyCode.Mouse1);
 
-            if (!_slashPlane.Active && Input.GetKeyDown(KeyCode.Mouse0)
-                                    && Mathf.Approximately(_energy, SlashDuration))
+            if (!_slashPlane.Active && Input.GetKeyDown(KeyCode.Mouse0))
                 _slashPlane.Active = true;
 
             if (_slashPlane.Active)
-            {
-                if (Input.GetKey(KeyCode.Mouse0))
-                {
-                    if (_energy > 0f)
-                        _energy -= GameTime.DeltaTime;
-                    else
-                        _slashPlane.Active = false;
-                }
-                else
-                    _slashPlane.Active = false;
-            }
-            else
-            {
-                _energy = Mathf.Min(_energy + GameTime.DeltaTime * EnergyReplenishRate,
-                    SlashDuration);
-            }
+                _slashPlane.Active = Input.GetKey(KeyCode.Mouse0);
         }
     }
 }
