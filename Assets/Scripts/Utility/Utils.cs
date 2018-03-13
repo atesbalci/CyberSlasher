@@ -29,5 +29,13 @@ namespace Utility
             var size = new Vector3(max.x - min.x, max.y - min.y, 0f);
             return new Bounds(new Vector3(min.x + size.x / 2f, min.y + size.y / 2f, 0f), size);
         }
+
+        public static Vector3? RaycastPlane(this Plane plane, Ray ray)
+        {
+            float dist;
+            if (plane.Raycast(ray, out dist))
+                return ray.GetPoint(dist);
+            return null;
+        }
     }
 }

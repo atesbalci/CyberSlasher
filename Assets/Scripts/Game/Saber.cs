@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using DG.Tweening;
 using UnityEngine;
 
 namespace Game
@@ -15,13 +13,14 @@ namespace Game
         [SerializeField] private Transform _tipPlane;
         [SerializeField] private float _minHeight;
         [SerializeField] private float _radius;
-        private Sequence _sequence;
         private Material _bladeMaterial;
         private int _streak;
+        private SaberPlane _saberPlane;
 
         private void Start()
         {
             _bladeMaterial = _bladeRenderer.material;
+            _saberPlane = new SaberPlane(_tipPlane, _radius, _minHeight);
         }
 
         private void Update()
@@ -32,28 +31,14 @@ namespace Game
 
             if (Active != null && Active())
                 return;
-            float dist;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            var tipPlane = new Plane(_tipPlane.forward, _tipPlane.position);
-            var pt = RaycastPlane(tipPlane, ray);
-            if (pt != null)
+            var finalPoint = _saberPlane.GetPointOnRadius(ray);
+            if (finalPoint != null)
             {
-                var point = pt.Value;
-                point.y = Mathf.Max(_minHeight, point.y);
-                var center = RaycastPlane(tipPlane, new Ray(transform.position, _tipPlane.forward)) ?? Vector3.zero;
-                var finalPoint = center + (point - center).normalized * _radius;
                 transform.rotation = Quaternion.RotateTowards(transform.rotation,
-                    Quaternion.LookRotation(finalPoint - transform.position), Time.deltaTime * 400f);
-                Debug.DrawLine(finalPoint, finalPoint + Vector3.up * 0.2f);
+                    Quaternion.LookRotation(finalPoint.Value - transform.position), Time.deltaTime * 400f);
+                Debug.DrawLine(finalPoint.Value, finalPoint.Value + Vector3.up * 0.2f);
             }
-        }
-
-        private static Vector3? RaycastPlane(Plane plane, Ray ray)
-        {
-            float dist;
-            if (plane.Raycast(ray, out dist))
-                return ray.GetPoint(dist);
-            return null;
         }
 
         public HitType Swing(Vector2 direction, bool hit)
