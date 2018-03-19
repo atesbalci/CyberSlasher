@@ -34,7 +34,7 @@ namespace Game
                     trail.material.color = hit == HitType.Super ? SuperHitColor : RegularHitColor;
                     trail.transform.DOMove(slashInfo.ExitPosition, 0.2f);
                     Observable.Timer(TimeSpan.FromSeconds(2f)).Subscribe(l => Destroy(trail.gameObject)).AddTo(trail.gameObject);
-                    Debug.DrawLine(slashInfo.EnterPosition, slashInfo.ExitPosition, Color.red, 1f, false);
+                    //Debug.DrawLine(slashInfo.EnterPosition, slashInfo.ExitPosition, Color.red, 1f, false);
                 }
             });
         }
