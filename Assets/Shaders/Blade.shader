@@ -35,8 +35,8 @@ SubShader {
                 float2 texcoord : TEXCOORD0;
             };
 
-            fixed _Cutoff;
-			fixed _Sharpness;
+            half _Cutoff;
+			half _Sharpness;
 			fixed4 _Color;
 			fixed4 _CutColor;
             sampler2D _MainTex;

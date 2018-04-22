@@ -4,6 +4,7 @@ namespace Game
 {
     public interface ISlashable
     {
-        Collider Collider { get; set; }
+        Collider Collider { get; }
+        void Hit(HitType hitType);
     }
 }
