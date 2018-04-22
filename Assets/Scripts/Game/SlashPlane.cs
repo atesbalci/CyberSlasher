@@ -24,6 +24,7 @@ namespace Game
                     ApplyHits();
                 }
                 _active = value;
+                GameTime.Slashing = value;
             }
         }
 

@@ -1,6 +1,10 @@
 ﻿using System.Linq;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Core.PathCore;
+using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using Utility;
 
 namespace Game
 {
@@ -20,23 +24,20 @@ namespace Game
             _rightPositions = _rightPositionsRaw.Select(x => x.position).ToArray();
         }
 
-        private void Update()
+        public void Spawn(EnemyPath path, bool boss, float duration)
         {
-            if (Input.GetKeyDown(KeyCode.K))
+            var p = path == EnemyPath.Left ? _leftPositions : _rightPositions;
+            var enemy = Instantiate(boss ? _bossPrefab : _minionPrefab, p[0], Quaternion.identity);
+            enemy.Path = path;
+            var tweener = new TweenerCore<Vector3, Path, PathOptions>[1];
+            tweener[0] = enemy.transform.DOPath(p, duration, PathType.CatmullRom).OnUpdate(() =>
             {
-                Spawn(true, false);
-            }
-            else if (Input.GetKeyDown(KeyCode.L))
-            {
-                Spawn(false, false);
-            }
-        }
-
-        public void Spawn(bool left, bool boss)
-        {
-            var path = left ? _leftPositions : _rightPositions;
-            var enemy = Instantiate(boss ? _bossPrefab : _minionPrefab, path[0], Quaternion.identity);
-            enemy.transform.DOPath(path, 5f, PathType.CatmullRom);
+                tweener[0].timeScale = GameTime.Scale;
+                if (enemy.IsDead)
+                {
+                    tweener[0].Kill();
+                }
+            }).OnComplete(() => Destroy(enemy.gameObject));
         }
     }
 }

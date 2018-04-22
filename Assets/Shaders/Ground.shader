@@ -3,7 +3,7 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_SpectrumTex ("Texture", 2D) = "white" {}
+		_SpectrumTex ("Spectrum", 2D) = "white" {}
 	}
 	SubShader
 	{
@@ -41,7 +41,7 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-				o.colorUv = float2(fmod(v.vertex.x, 1.0), 1.0);
+				o.colorUv = float2(_SpectrumTex_ST.z + v.vertex.x * _SpectrumTex_ST.x + _SpectrumTex_ST.w + _SpectrumTex_ST.y * v.vertex.z, 1.0);
 				return o;
 			}
 			
