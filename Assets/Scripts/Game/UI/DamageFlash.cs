@@ -26,7 +26,7 @@ namespace Game.UI
                 col.a = FadeOpacity;
                 graphic.color = col;
                 _tweener = graphic.DOFade(0f, 0.25f).SetEase(Ease.Linear);
-            });
+            }).AddTo(gameObject);
         }
     }
 }

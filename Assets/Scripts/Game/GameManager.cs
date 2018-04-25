@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using UniRx;
 using UnityEngine;
 using Utility;
 
@@ -11,6 +12,8 @@ namespace Game
         private const float SpawnIntervalVariance = 1f;
         private const float EnemyRunDuration = 2.5f;
 
+        public float Score { get; set; }
+
         private Player _player;
         private EnemySpawner _enemySpawner;
         private float _timeUntilNextSpawn;
@@ -21,6 +24,12 @@ namespace Game
             _player = FindObjectOfType<Player>();
             _enemySpawner = FindObjectOfType<EnemySpawner>();
             _timeUntilNextSpawn = 2f;
+            Score = 0f;
+            MessageManager.ReceiveEvent<EnemyDefeatedEvent>().Subscribe(ev =>
+            {
+                var isBoss = ev.Enemy is Boss; //TODO: Haram
+                Score += isBoss ? 300f : 100f;
+            });
         }
 
         private void Update()
@@ -28,6 +37,10 @@ namespace Game
             if (_player.Health < 0.001f)
             {
                 MessageManager.SendEvent(new PlayerDeadEvent());
+            }
+            else
+            {
+                Score += Time.deltaTime * 10f;
             }
 
             _timeUntilNextSpawn -= GameTime.DeltaTime;

@@ -8,11 +8,24 @@ namespace Game
         public Collider Collider { get; private set; }
         public EnemyPath Path { get; set; }
 
-        public bool IsDead { get; protected set; }
+        public bool IsDead
+        {
+            get { return _isDead; }
+            protected set
+            {
+                if (_isDead != value && value)
+                {
+                    MessageManager.SendEvent(new EnemyDefeatedEvent { Enemy = this });
+                }
+                _isDead = value;
+            }
+        }
+
         public bool IsPastPlayer { get; protected set; }
 
         private Vector3 _prevPos;
-        
+        private bool _isDead;
+
         protected abstract float Damage { get; }
         public abstract void Hit(HitType hitType);
 
@@ -61,5 +74,10 @@ namespace Game
     public class PlayerDamagedEvent : GameEvent
     {
         public float Damage { get; set; }
+    }
+
+    public class EnemyDefeatedEvent : GameEvent
+    {
+        public Enemy Enemy { get; set; }
     }
 }

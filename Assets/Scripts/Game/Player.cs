@@ -4,6 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using Utility;
 using UniRx;
+using UnityEngine.EventSystems;
 
 namespace Game
 {
@@ -46,8 +47,8 @@ namespace Game
                     slashInfo.Slashee.Hit(hit);
                     break; //nice solution lol
                 }
-            });
-            MessageManager.ReceiveEvent<PlayerDamagedEvent>().Subscribe(ev => Health -= ev.Damage);
+            }).AddTo(gameObject);
+            MessageManager.ReceiveEvent<PlayerDamagedEvent>().Subscribe(ev => Health -= ev.Damage).AddTo(gameObject);
         }
 
         public float LeanState
@@ -55,7 +56,7 @@ namespace Game
             get { return transform.localPosition.x / MaxLeanAmount; }
         }
 
-        private void Lean(float lean)
+        public void Lean(float lean)
         {
             if (_leaningSequence != null && _leaningSequence.ElapsedPercentage() > 0.8f)
             {
@@ -79,12 +80,13 @@ namespace Game
             }
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             _charController.FirstPersonActive = Input.GetKey(KeyCode.Mouse1);
 
-            if (!_slashPlane.Active && Input.GetKeyDown(KeyCode.Mouse0)
-                                    && Mathf.Approximately(_energy, SlashDuration))
+            if (!_slashPlane.Active && Input.GetMouseButtonDown(0)
+                                    && Mathf.Approximately(_energy, SlashDuration)
+                                    && !EventSystem.current.currentSelectedGameObject)
                 _slashPlane.Active = true;
 
             if (_slashPlane.Active)
