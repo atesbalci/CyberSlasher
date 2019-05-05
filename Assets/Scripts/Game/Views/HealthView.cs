@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Game.Engine;
+using UnityEngine;
 
-namespace Game
+namespace Game.Views
 {
     [RequireComponent(typeof(Player))]
     public class HealthView : MonoBehaviour

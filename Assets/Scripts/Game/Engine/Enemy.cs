@@ -27,6 +27,7 @@ namespace Game.Engine
 
         private Vector3 _prevPos;
         private Player _player;
+        private bool _isDead;
         
         protected abstract float Damage { get; }
         public abstract void Hit(HitType hitType);

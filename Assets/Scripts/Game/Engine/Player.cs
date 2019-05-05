@@ -5,6 +5,7 @@ using Game.Models;
 using Helpers;
 using UniRx;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Game.Engine
 {
